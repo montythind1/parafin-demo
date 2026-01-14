@@ -10,7 +10,8 @@ const SCENARIOS = [
   { key: "preapproved", label: "2) Pre-approved offer", personId: "person_30d52368-79f6-4e07-8582-78e37c0c57d3" },
   { key: "capital_otw", label: "3) Capital on its way", personId: "person_4dad4290-8c83-4853-9af8-eea7d169adb6" },
   { key: "outstanding", label: "4) Accepted + outstanding balance", personId: "person_b25a1f05-5309-413f-a2f9-e5e0e6f772c8" },
-  { key: "Demo", label: "5) Just for Demo End to End", personId: "person_90326680-d793-4a77-a378-ade5053b5792" },
+  // This is for the Live demo used for recording
+  { key: "Demo", label: "5) Just for Live Demo End to End", personId: "person_90326680-d793-4a77-a378-ade5053b5792" },
 ];
 
 function App() {
@@ -52,7 +53,6 @@ function App() {
   fetchPerson();
   }, [scenario.personId]);
 
-
   if (!token) {
     return <LoadingShell>loading...</LoadingShell>;
   }
@@ -72,7 +72,7 @@ function App() {
               marginBottom: 12,
             }}
             >
-            <b>Demo state:</b>
+            <b>SELECT STATE:</b>
             <select 
               value={scenarioKey}
               onChange={(e) => setScenarioKey(e.target.value)}

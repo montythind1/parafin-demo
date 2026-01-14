@@ -1,6 +1,6 @@
 # Parafin Elements Quickstart
 
-[Parafin Widget](https://docs.parafin.com/capital/present-offers/embedded/reference) is a React component available via the @parafin/react npm package that allows you to embed Parafin’s capital experience directly within your app.
+[Parafin Widget](https://docs.parafin.com/capital/present-offers/embedded/reference) is a React component available via the `@parafin/react` npm package that allows you to embed Parafin’s capital experience directly within your app.
 
 This project demonstrates Parafin’s embedded capital UI and showcases four Flex Loan lifecycle states using Parafin’s sandbox APIs.
 
@@ -66,23 +66,22 @@ Open [http://localhost:3000](http://localhost:3000) to view the app with an embe
 
 Each state is represented by a different sandbox Person and corresponding Parafin setup.
 
-## Common setup (all states)
+### Common setup (all states)
 
 For every scenario, the following entities exist:
 
-Business
-
-Person, linked to the business as an owner or representative
+- **Business**
+- **Person**, linked to the business as an owner or representative
 
 A bank account is only required during the application step.
 
 ### 1. No Offers Available
 
-#### How it’s triggered
+**How it’s triggered**
 - Business and Person are created
 - No capital product offer is generated
 
-#### UI result
+**UI result**
 - No loan offers displayed
 - No “Apply now” call-to-action
 
@@ -90,13 +89,12 @@ Represents a merchant that exists but is not yet eligible for capital.
 
 ### 2. Pre-Approved Offer Available
 
-#### How it’s triggered
+**How it’s triggered**
 - Business and Person are created
 - A pre-approved offer is generated using the sandbox API:
+    ``` POST /v1/sandbox/capital_product_offers ```
 
-    POST /v1/sandbox/capital_product_offers
-
-#### UI result
+**UI result**
 - Pre-approved Flex Loan displayed
 - “Apply now” call-to-action visible
 
@@ -104,27 +102,26 @@ Represents a merchant that has passed underwriting and is eligible to apply.
 
 ### 3. Capital on Its Way
 
-#### How it’s triggered
+**How it’s triggered**
 - Start from a pre-approved offer
 - User clicks “Apply now” in the embedded widget
 - Bank account is provided during the application
 - Application is manually approved in sandbox:
 
-    POST /v1/sandbox/capital_product_application/{id}/approve
-
-#### UI result
+    ``` POST /v1/sandbox/capital_product_application/{id}/approve ```
+**UI result**
 - Offer accepted
 - Status transitions to “Capital on its way”
 
 ### 4. Offer Accepted, Outstanding Balance
 
-#### How it’s triggered
+**How it’s triggered**
 - Start from “Capital on its way”
 - Capital product is funded using the sandbox API: 
-    
-    POST /v1/sandbox/fund_capital_product
 
-#### UI result
+    ``` POST /v1/sandbox/fund_capital_product ```
+
+**UI result**
 - Capital summary displayed
 - Outstanding balance visible
 - Loan is active

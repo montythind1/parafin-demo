@@ -58,6 +58,34 @@ app.get("/parafin/token/:id/:isDev?", async (req, res) => {
   }
 });
 
+app.get("/parafin/person/:personId", async (req, res) => {
+  const { personId } = req.params;
+
+  try {
+    const response = await axios.get(
+      `https://api.parafin.com/v1/persons/${personId}`,
+      {
+        auth: {
+          username: process.env.PARAFIN_CLIENT_ID,
+          password: process.env.PARAFIN_CLIENT_SECRET,
+        },
+      }
+    );
+
+    const { first_name, last_name } = response.data;
+
+    res.json({
+      first_name,
+      last_name,
+    });
+  } catch (error) {
+    console.error("Error fetching person:", error.response?.data);
+    res.status(500).json({
+      message: "Failed to fetch person details",
+    });
+  }
+});
+
 // Starting Server
 app.listen(process.env.PORT || 8080, () => {
   console.log(`App listening on PORT: ${process.env.PORT || 8080}`);

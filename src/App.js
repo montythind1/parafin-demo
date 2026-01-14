@@ -5,55 +5,53 @@ import { ParafinWidget } from "@parafin/react";
 import { Header } from "./components/Header.tsx";
 import { SideNav } from "./components/SideNav.tsx";
 
+const SCENARIOS = [
+  { key: "no_offers", label: "1) No offers available", personId: "person_cd34adc8-86c6-4ee5-a49d-d75356dfc2e1" },
+  { key: "preapproved", label: "2) Pre-approved offer", personId: "person_30d52368-79f6-4e07-8582-78e37c0c57d3" },
+  { key: "capital_otw", label: "3) Capital on its way", personId: "person_4dad4290-8c83-4853-9af8-eea7d169adb6" },
+  { key: "outstanding", label: "4) Accepted + outstanding balance", personId: "person_b25a1f05-5309-413f-a2f9-e5e0e6f772c8" },
+  { key: "Demo", label: "5) Just for Demo End to End", personId: "person_90326680-d793-4a77-a378-ade5053b5792" },
+];
+
 function App() {
+  const [scenarioKey, setScenarioKey] = useState("no_offers");
   const [token, setToken] = useState(null);
   const [tab, setTab] = useState("capital");
+  const [personInfo, setPersonInfo] = useState(null);
 
+  const scenario = SCENARIOS.find((s) => s.key === scenarioKey) || SCENARIOS[0];
+
+   // Fetch token whenever scenario changes
   useEffect(() => {
     // Change to false to use production or sandbox production environment
-    const isDevEnvironment = true;
+    const isDevEnvironment = false;
 
     const fetchToken = async () => {
-      // Replace with your own Person ID. It should begin with "person_".
-      const personId = "<your-person-id>";
-
       // Fetch Parafin token from server
       const response = await axios.get(
-        `/parafin/token/${personId}/${isDevEnvironment}`
-      );
+        `/parafin/token/${scenario.personId}/${isDevEnvironment}`
+    );
       setToken(response.data.parafinToken);
     };
 
-    if (!token) {
-      fetchToken();
-    }
-  });
+    setToken(null);     // force loading + ensure new fetch
+    fetchToken();
+  }, [scenario.personId]);
 
-  const onOptIn = async () => ({
-    businessExternalId: "<your-external-business-id>",
-    legalBusinessName: "Hearty Kitchens LLC",
-    dbaName: "Hearty Kitchens",
-    ownerFirstName: "Ralph",
-    ownerLastName: "Furman",
-    accountManagers: [
-      {
-        name: "Vineet Goel",
-        email: "test1@parafin.com",
-      },
-    ],
-    routingNumber: "121141822",
-    accountNumberLastFour: "6789",
-    bankAccountCurrencyCode: "USD",
-    email: "test2@parafin.com",
-    phoneNumber: "2026331000",
-    address: {
-      addressLine1: "301 Howard St",
-      city: "San Francisco",
-      state: "CA",
-      postalCode: "94105",
-      country: "USA",
-    },
-  });
+  // Fetch person info whenever scenario changes
+  useEffect(() => {
+  const fetchPerson = async () => {
+    try {
+      const res = await axios.get(`/parafin/person/${scenario.personId}`);
+      setPersonInfo(res.data);
+    } catch (e) {
+      setPersonInfo(null);
+    }
+  };
+
+  fetchPerson();
+  }, [scenario.personId]);
+
 
   if (!token) {
     return <LoadingShell>loading...</LoadingShell>;
@@ -66,12 +64,36 @@ function App() {
         <SideNav onClick={(newProduct) => setTab(newProduct)} />
         {tab === "capital" && (
           <PageShell>
-            <ParafinWidget
-              token={token}
-              product="capital"
-              // Optional props below, see docs.parafin.com for more information
-              externalBusinessId={undefined}
-              onOptIn={onOptIn}
+            <div
+            style={{
+              display: "flex",
+              gap: 12,
+              alignItems: "center",
+              marginBottom: 12,
+            }}
+            >
+            <b>Demo state:</b>
+            <select 
+              value={scenarioKey}
+              onChange={(e) => setScenarioKey(e.target.value)}
+            >
+              {SCENARIOS.map((s) => (
+                <option key={s.key} value={s.key}>
+                  {s.label}
+                </option>
+              ))}
+            </select>
+             {personInfo && (
+                <span style={{ opacity: 0.7 }}>
+                  <b>Person:</b> {personInfo.first_name} {personInfo.last_name}
+                </span>
+              )}
+            </div>
+              <ParafinWidget
+                key={scenario.personId}
+                token={token}
+                product="capital"
+                externalBusinessId={undefined}
             />
           </PageShell>
         )}

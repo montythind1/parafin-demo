@@ -44,12 +44,6 @@ The sample file contains placeholder values based on sandbox usage.
 $ mv sample.env .env
 ```
 
-```bash
-# .env
-PARAFIN_CLIENT_ID="<your-client-id>"
-PARAFIN_CLIENT_SECRET="<your-client-secret>"
-```
-
 ### 3. Run the app
 
 Start the application:
@@ -91,8 +85,8 @@ Represents a merchant that exists but is not yet eligible for capital.
 
 **How it’s triggered**
 - Business and Person are created
-- A pre-approved offer is generated using the sandbox API:
-    ``` POST /v1/sandbox/capital_product_offers ```
+- A pre-approved offer is generated using the sandbox API:  
+``` POST /v1/sandbox/capital_product_offers ```
 
 **UI result**
 - Pre-approved Flex Loan displayed
@@ -106,9 +100,9 @@ Represents a merchant that has passed underwriting and is eligible to apply.
 - Start from a pre-approved offer
 - User clicks “Apply now” in the embedded widget
 - Bank account is provided during the application
-- Application is manually approved in sandbox:
+- Application is manually approved in sandbox:  
+``` POST /v1/sandbox/capital_product_application/{id}/approve ```
 
-    ``` POST /v1/sandbox/capital_product_application/{id}/approve ```
 **UI result**
 - Offer accepted
 - Status transitions to “Capital on its way”
@@ -117,9 +111,8 @@ Represents a merchant that has passed underwriting and is eligible to apply.
 
 **How it’s triggered**
 - Start from “Capital on its way”
-- Capital product is funded using the sandbox API: 
-
-    ``` POST /v1/sandbox/fund_capital_product ```
+- Capital product is funded using the sandbox API:  
+``` POST /v1/sandbox/fund_capital_product ```
 
 **UI result**
 - Capital summary displayed
